@@ -18,34 +18,18 @@ hotelController.list = function (req, res) {
 
 hotelController.filter = function (req, res) {
   try {
-    var calificacionMax = parseInt(req.query.calificacionMax);
-    var calificacionMin = parseInt(req.query.calificacionMin);
-    var precioMax = parseInt(req.query.precioMax);
-    var precioMin = parseInt(req.query.precioMin);
-
-    if (isNaN(calificacionMin) ||
-      isNaN(calificacionMax) ||
-      isNaN(precioMax) ||
-      isNaN(precioMin)) { throw new Error("La calificación y el precio deben ser numericos"); }
-
-    if (calificacionMin > 0 && calificacionMax > 0 && precioMin < 1 && precioMax < 1) {
-      Hotel.find({ 'calificacion': { $gt: calificacionMin, $lt: calificacionMax } }).exec()
+    var stars = parseInt(req.query.calificacion);
+    if (isNaN(stars)) { throw new Error("La calificación debe ser númerica."); }
+    if (stars > 0) {
+      Hotel.find({ 'name': req.query.name, 'stars': stars }).exec()
         .then(data => res.json(data))
         .catch(err => res.json(err));
     }
-
-    if (calificacionMin < 1 && calificacionMax < 1 && precioMin > 0 && precioMax > 0) {
-      Hotel.find({ 'precio': { $gt: precioMin, $lt: precioMax } }).exec()
+    if (stars < 1) {
+      Hotel.find({ 'name': req.query.name }).exec()
         .then(data => res.json(data))
         .catch(err => res.json(err));
     }
-
-    if (calificacionMin > 0 && calificacionMax > 0 && precioMin > 0 && precioMax > 0) {
-      Hotel.find({ 'precio': { $gt: precioMin, $lt: precioMax }, 'calificacion': { $gt: calificacionMin, $lt: calificacionMax } }).exec()
-        .then(data => res.json(data))
-        .catch(err => res.json(err));
-    }
-
   } catch (error) {
     res.status(400).send(error.message);
   }

@@ -6,8 +6,10 @@ router.get('/list', hotel.list);
 
 router.get('/filter', hotel.filter);
 
-router.get('/findByName', hotel.findByName);
-
 router.post('/save', hotel.save);
+
+router.put('/update', hotel.update);
+
+router.delete('/delete', hotel.delete);
 
 module.exports = router;

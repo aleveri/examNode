@@ -51,19 +51,21 @@ hotelController.filter = function (req, res) {
   }
 };
 
-hotelController.findByName = function (req, res) {
-  try {
-    Hotel.find({ "nombre": { $regex: req.query.nombre, $options: 'i' } }).exec()
-      .then(data => res.json(data))
-      .catch(err => res.json(err));
-  } catch (error) {
-    res.status(400).send(error.message);
-  }
-};
-
 hotelController.save = function (req, res) {
   var hotel = new Hotel(req.body);
   hotel.save()
+    .then(x => { res.json({}) })
+    .catch(err => res.json(err));
+};
+
+hotelController.update = function (req, res) {
+  Hotel.updateOne({ '_id': req.body._id }, req.body)
+    .then(x => { res.json({}) })
+    .catch(err => res.json(err));
+};
+
+hotelController.delete = function (req, res) {
+  Hotel.deleteOne({ '_id': req.query.id })
     .then(x => { res.json({}) })
     .catch(err => res.json(err));
 };

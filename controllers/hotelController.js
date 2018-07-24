@@ -18,18 +18,12 @@ hotelController.list = function (req, res) {
 
 hotelController.filter = function (req, res) {
   try {
-    var stars = parseInt(req.query.calificacion);
-    if (isNaN(stars)) { throw new Error("La calificación debe ser númerica."); }
-    if (stars > 0) {
-      Hotel.find({ 'name': req.query.name, 'stars': stars }).exec()
-        .then(data => res.json(data))
-        .catch(err => res.json(err));
-    }
-    if (stars < 1) {
-      Hotel.find({ 'name': req.query.name }).exec()
-        .then(data => res.json(data))
-        .catch(err => res.json(err));
-    }
+    var starsMin = parseInt(req.query.calificacionMin);
+    var starsMax = parseInt(req.query.calificacionMax);
+    if (isNaN(starsMin) || isNaN(starsMax)) { throw new Error("La calificación minima y la calificación maxima debe ser númerica."); }
+    Hotel.find({ 'name': req.query.name, 'stars': { $gte: starsMin, $lte: starsMax } }).exec()
+      .then(data => res.json(data))
+      .catch(err => res.json(err));
   } catch (error) {
     res.status(400).send(error.message);
   }

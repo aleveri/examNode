@@ -21,13 +21,13 @@ hotelController.filter = function (req, res) {
     var starsMin = parseInt(req.query.calificacionMin);
     var starsMax = parseInt(req.query.calificacionMax);
     if (isNaN(starsMin) || isNaN(starsMax)) { throw new Error("La calificación minima y la calificación maxima debe ser númerica."); }
-    if (req.query.name) {
-      Hotel.find({ 'name': req.query.name, 'stars': { $gte: starsMin, $lte: starsMax } }).exec()
+    if (req.query.name !== undefined) {
+      Hotel.find({ 'name': { $regex: req.query.name, $options: 'i' } }).exec()
         .then(data => res.json(data))
         .catch(err => res.json(err));
     }
-    if (!req.query.name) {
-      Hotel.find({ 'stars': { $gte: starsMin, $lte: starsMax } }).exec()
+    if (req.query.name === undefined) {
+      Hotel.find({ 'stars': { $gt: starsMin, $lt: starsMax } }).exec()
         .then(data => res.json(data))
         .catch(err => res.json(err));
     }
